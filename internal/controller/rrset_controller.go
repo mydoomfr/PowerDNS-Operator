@@ -107,7 +107,7 @@ func (r *RRsetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 				log.Error(err, "Failed to remove finalizer")
 				return ctrl.Result{}, err
 			}
-			lastUpdateTime = &metav1.Time{Time: time.Now().UTC()}
+			// lastUpdateTime = &metav1.Time{Time: time.Now().UTC()}
 		}
 
 		// Stop reconciliation as the item is being deleted

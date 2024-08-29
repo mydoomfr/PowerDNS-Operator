@@ -1,7 +1,10 @@
-# Image URL to use all building/pushing image targets
-IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.29.0
+ENVTEST_K8S_VERSION = 1.31.0
+
+# Image registry for build/push image targets
+export IMAGE_REGISTRY ?= ghcr.io
+export IMAGE_REPO     ?= orange-opensource/powerdns-operator
+export IMAGE_NAME ?= $(IMAGE_REGISTRY)/$(IMAGE_REPO)
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -15,16 +18,46 @@ endif
 # scaffolded by default. However, you might want to replace it to use other
 # tools. (i.e. podman)
 CONTAINER_TOOL ?= docker
+ARCH ?= amd64 arm64 ppc64le
+BUILD_ARGS ?= CGO_ENABLED=0
+DOCKERFILE ?= Dockerfile
+DOCKER_BUILD_ARGS ?=
+OUTPUT_DIR  ?= bin
 
 # Setting SHELL to bash allows bash commands to be executed by recipes.
 # Options are set to exit when a recipe line exits non-zero or a piped command fails.
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
+# check if there are any existing `git tag` values
+ifeq ($(shell git tag),)
+# no tags found - default to initial tag `v0.0.0`
+export VERSION := $(shell echo "v0.0.0-$$(git rev-list HEAD --count)-g$$(git describe --dirty --always)" | sed 's/-/./2' | sed 's/-/./2')
+else
+# use tags
+export VERSION := $(shell git describe --dirty --always --tags --exclude 'helm*' | sed 's/-/./2' | sed 's/-/./2')
+endif
+
+TAG_SUFFIX ?=
+export IMAGE_TAG ?= $(VERSION)$(TAG_SUFFIX)
+
 .PHONY: all
 all: build
 
 ##@ General
+
+reviewable: generate manifests lint ## Ensure a PR is ready for review.
+	@go mod tidy
+
+check-diff: reviewable ## Ensure branch is clean.
+	@echo checking that branch is clean
+	@test -z "$$(git status --porcelain)" || (echo "$$(git status --porcelain)" && (echo "branch is dirty" && exit 1))
+	@echo branch is clean
+
+update-deps:
+	go get -u
+	cd e2e && go get -u
+	@go mod tidy
 
 # The help target prints out all targets with their descriptions organized
 # beneath their categories. The categories are represented by '##@' and the
@@ -78,9 +111,25 @@ lint-fix: golangci-lint ## Run golangci-lint linter and perform fixes
 
 ##@ Build
 
+.PHONY: docker-image
+docker-image:  ## Emit IMAGE_NAME:IMAGE_TAG
+	@echo $(IMAGE_NAME):$(IMAGE_TAG)
+
+.PHONY: docker-imagename
+docker-imagename:  ## Emit IMAGE_NAME
+	@echo $(IMAGE_NAME)
+
+.PHONY: docker-tag
+docker-tag:  ## Emit IMAGE_TAG
+	@echo $(IMAGE_TAG)
+
 .PHONY: build
-build: manifests generate fmt vet ## Build manager binary.
-	go build -o bin/manager cmd/main.go
+build: $(addprefix build-,$(ARCH)) ## Build binary
+
+.PHONY: build-%
+build-%: manifests generate fmt vet ## Build manager binary.
+	$(BUILD_ARGS) GOOS=linux GOARCH=$* \
+		go build -o '$(OUTPUT_DIR)/powerdns-operator-linux-$*' cmd/main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
@@ -90,18 +139,33 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: ## Build docker image with the manager.
-	$(CONTAINER_TOOL) build -t ${IMG} .
+docker-build: $(addprefix build-,$(ARCH)) ## Build the docker image
+	DOCKER_BUILDKIT=1 $(CONTAINER_TOOL) build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t $(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: docker-push
 docker-push: ## Push docker image with the manager.
-	$(CONTAINER_TOOL) push ${IMG}
+	$(CONTAINER_TOOL) push $(IMAGE_NAME):$(IMAGE_TAG)
+
+# RELEASE_TAG is tag to promote. Default is promoting to main branch, but can be overriden
+# to promote a tag to a specific version.
+RELEASE_TAG ?= $(IMAGE_TAG)
+SOURCE_TAG ?= $(VERSION)$(TAG_SUFFIX)
+
+.PHONY: docker-promote
+docker-promote: ## Promote the docker image to the registry
+	docker manifest inspect --verbose $(IMAGE_NAME):$(SOURCE_TAG) > .tagmanifest
+	for digest in $$(jq -r 'if type=="array" then .[].Descriptor.digest else .Descriptor.digest end' < .tagmanifest); do \
+		docker pull $(IMAGE_NAME)@$$digest; \
+	done
+	docker manifest create $(IMAGE_NAME):$(RELEASE_TAG) \
+		$$(jq -j '"--amend $(IMAGE_NAME)@" + if type=="array" then .[].Descriptor.digest else .Descriptor.digest end + " "' < .tagmanifest)
+	docker manifest push $(IMAGE_NAME):$(RELEASE_TAG)
 
 # PLATFORMS defines the target platforms for the manager image be built to provide support to multiple
-# architectures. (i.e. make docker-buildx IMG=myregistry/mypoperator:0.0.1). To use this option you need to:
+# architectures. (i.e. make docker-buildx IMAGE_NAME=myregistry/mypoperator IMAGE_TAG=0.0.1). To use this option you need to:
 # - be able to use docker buildx. More info: https://docs.docker.com/build/buildx/
 # - have enabled BuildKit. More info: https://docs.docker.com/develop/develop-images/build_enhancements/
-# - be able to push the image to your registry (i.e. if you do not set a valid value via IMG=<myregistry/image:<tag>> then the export will fail)
+# - be able to push the image to your registry (i.e. if you do not set a valid value via IMAGE_NAME=<myregistry/image IMAGE_TAG=<tag>> then the export will fail)
 # To adequately provide solutions that are compatible with multiple platforms, you should consider using this option.
 PLATFORMS ?= linux/arm64,linux/amd64,linux/s390x,linux/ppc64le
 .PHONY: docker-buildx
@@ -110,15 +174,15 @@ docker-buildx: ## Build and push docker image for the manager for cross-platform
 	sed -e '1 s/\(^FROM\)/FROM --platform=\$$\{BUILDPLATFORM\}/; t' -e ' 1,// s//FROM --platform=\$$\{BUILDPLATFORM\}/' Dockerfile > Dockerfile.cross
 	- $(CONTAINER_TOOL) buildx create --name project-v3-builder
 	$(CONTAINER_TOOL) buildx use project-v3-builder
-	- $(CONTAINER_TOOL) buildx build --push --platform=$(PLATFORMS) --tag ${IMG} -f Dockerfile.cross .
+	- $(CONTAINER_TOOL) buildx build --push --platform=$(PLATFORMS) --tag $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile.cross .
 	- $(CONTAINER_TOOL) buildx rm project-v3-builder
 	rm Dockerfile.cross
 
 .PHONY: build-installer
 build-installer: manifests generate kustomize ## Generate a consolidated YAML with CRDs and deployment.
-	mkdir -p dist
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > dist/install.yaml
+	mkdir -p deploy
+	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMAGE_NAME):$(IMAGE_TAG)
+	$(KUSTOMIZE) build config/default > deploy/bundle.yaml
 
 ##@ Deployment
 
@@ -136,7 +200,7 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 
 .PHONY: deploy
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMAGE_NAME):$(IMAGE_TAG)
 	$(KUSTOMIZE) build config/default | $(KUBECTL) apply -f -
 
 .PHONY: undeploy
