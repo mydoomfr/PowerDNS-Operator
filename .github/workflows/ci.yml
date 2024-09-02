@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ci-init-pr-test
   pull_request: {}
 
 env:
