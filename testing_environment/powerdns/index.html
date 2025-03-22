@@ -10,13 +10,11 @@
       
       
       
-        <link rel="canonical" href="https://orange-opensource.github.io/powerdns-operator/introduction/getting-started/">
+        <link rel="canonical" href="https://orange-opensource.github.io/powerdns-operator/testing_environment/powerdns/">
       
       
-        <link rel="prev" href="../overview/">
+        <link rel="prev" href="../k3d/">
       
-      
-        <link rel="next" href="../faq/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
@@ -24,7 +22,7 @@
     
     
       
-        <title>Getting started - PowerDNS Operator</title>
+        <title>PowerDNS - PowerDNS Operator</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#powerdns-cluster-deployment" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting started
+              PowerDNS
             
           </span>
         </div>
@@ -230,12 +228,10 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../.." class="md-tabs__link">
           
   
@@ -272,11 +268,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../testing_environment/k3d/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../k3d/" class="md-tabs__link">
           
   
     
@@ -343,8 +341,6 @@
       
   
   
-    
-  
   
   
     
@@ -365,17 +361,16 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
@@ -391,13 +386,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Introduction
@@ -413,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../introduction/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -431,30 +426,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Getting started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../introduction/getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -463,53 +438,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-with-kustomize" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installing with Kustomize
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-with-helm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installing with Helm
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -522,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="../../introduction/faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -543,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stability-support/" class="md-nav__link">
+      <a href="../../introduction/stability-support/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -732,8 +660,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -744,19 +674,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -767,7 +698,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Testing Environment
@@ -781,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing_environment/k3d/" class="md-nav__link">
+      <a href="../k3d/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -799,10 +730,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../testing_environment/powerdns/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -811,6 +751,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -843,41 +784,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-with-kustomize" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installing with Kustomize
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-with-helm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installing with Helm
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -894,42 +800,8 @@
   
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">⚓</a></h1>
-<p>PowerDNS Operator runs within your Kubernetes cluster as a deployment resource. It utilizes CustomResourceDefinitions (CRDs) to manage PowerDNS resources. The Operator communicates with the PowerDNS API to manage zones and records.</p>
-<h2 id="pre-requisites">Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">⚓</a></h2>
-<p>Before you can install PowerDNS Operator, you need to have the following:</p>
-<ul>
-<li>A Kubernetes cluster v1.29.0 or later</li>
-<li>A PowerDNS server v4.7 or later</li>
-</ul>
-<blockquote>
-<p>Note: The PowerDNS API must be enabled and accessible from the Kubernetes cluster where the operator is running.</p>
-</blockquote>
-<h2 id="installing-with-kustomize">Installing with Kustomize<a class="headerlink" href="#installing-with-kustomize" title="Permanent link">⚓</a></h2>
-<p>Create the namespace and create a Secret containing the needed PowerDNS variables but you can also create the Secret using External Secrets or any other secret management tool.</p>
-<p>Theses secrets are used to configure the PowerDNS Operator to connect to the PowerDNS API.</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>powerdns-operator-system
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
-<span class="s">apiVersion: v1</span>
-<span class="s">kind: Secret</span>
-<span class="s">metadata:</span>
-<span class="s">  name: powerdns-operator-manager</span>
-<span class="s">  namespace: powerdns-operator-system</span>
-<span class="s">type: Opaque</span>
-<span class="s">stringData:</span>
-<span class="s">  PDNS_API_URL: https://powerdns.example.local:8081</span>
-<span class="s">  PDNS_API_KEY: secret</span>
-<span class="s">  PDNS_API_VHOST: localhost</span>
-<span class="s">EOF</span>
-</code></pre></div>
-<p>Install the latest version using the following command:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-k<span class="w"> </span>https://github.com/Orange-OpenSource/PowerDNS-Operator/releases/latest/download/bundle.yaml
-</code></pre></div>
-<p>Or you can specify a specific version (e.g. <code>v0.1.0</code>):</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-k<span class="w"> </span>https://github.com/Orange-OpenSource/PowerDNS-Operator/releases/download/v0.1.0/bundle.yaml
-</code></pre></div>
-<h2 id="installing-with-helm">Installing with Helm<a class="headerlink" href="#installing-with-helm" title="Permanent link">⚓</a></h2>
-<p>A Helm chart is available on a <a href="https://github.com/orange-opensource/PowerDNS-Operator-helm-chart">specific project</a>.</p>
+<h1 id="powerdns-cluster-deployment">PowerDNS cluster deployment<a class="headerlink" href="#powerdns-cluster-deployment" title="Permanent link">⚓</a></h1>
+<p>For a full clustered powerdns instance, See <a href="https://github.com/powerdns-operator/powerdns-deployment">Here</a></p>
 
 
 

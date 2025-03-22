@@ -254,12 +254,32 @@
     
     
       <li class="md-tabs__item">
-        <a href="guides/zones/" class="md-tabs__link">
+        <a href="guides/clusterzones/" class="md-tabs__link">
           
   
     
   
   Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="testing_environment/k3d/" class="md-tabs__link">
+          
+  
+    
+  
+  Testing Environment
 
         </a>
       </li>
@@ -492,6 +512,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -524,6 +548,27 @@
             Guides
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guides/clusterzones/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClusterZones
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -574,11 +619,127 @@
   
   
     <li class="md-nav__item">
+      <a href="guides/metrics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="guides/warnings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Warnings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Testing Environment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Testing Environment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="testing_environment/k3d/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    K3D
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="testing_environment/powerdns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PowerDNS
   </span>
   
 
@@ -650,7 +811,7 @@
   
 
 
-<h1 id="introduction">Introduction</h1>
+<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓</a></h1>
 <p><img alt="high-level" src="assets/diagrams-high-level-simple.png" /></p>
 <p><strong>PowerDNS Operator</strong> is a Kubernetes operator that manages PowerDNS service.</p>
 <p>With PowerDNS Operator you can manage zones, records and other PowerDNS resources directly from Kubernetes. It is designed to be a simple and easy-to-use solution to manage PowerDNS directly from Kubernetes through Custom Resources. The PowerDNS service can be located inside or outside of Kubernetes, it does not matter since the Operator relies on the PowerDNS API.</p>
@@ -658,7 +819,7 @@
 <p class="admonition-title">Info</p>
 <p>This project use the official <a href="https://doc.powerdns.com/authoritative/http-api/">PowerDNS API</a> and cannot be plugged to <a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin">PowerDNS-Admin</a> project which implement its own specific API on top PowerDNS's API. There is no issue if you want to use both projects together, but the operator can only relies on the official API and you may notice issues if you try to use PowerDNS-Admin to manage the same resources as the operator.</p>
 </div>
-<h3 id="why-use-powerdns-operator">Why use PowerDNS Operator?</h3>
+<h3 id="why-use-powerdns-operator">Why use PowerDNS Operator?<a class="headerlink" href="#why-use-powerdns-operator" title="Permanent link">⚓</a></h3>
 <p>We needed to offer DNS capabilities to users and considered relying on the PowerDNS-Admin project. However, we wanted a more flexible solution that could be natively integrated with our existing Kubernetes infrastructure. We were also looking for a solution that could be easily integrated with our GitOps workflow to automate the creation of DNS records as well as other resources such as Ingress, Services, etc.</p>
 <p>Another reason is that the PowerDNS-Admin project is not in <a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin/discussions/1708">good health</a> and will probably be rewritten in the future. We wanted a solution that is more reliable and easily maintained.</p>
 <p>The PowerDNS Operator is a convenient way to offer self-service DNS capabilities to users, allowing them to create resources directly in the Kubernetes cluster. Additionally, you can use Backstage or any Internal Developer Platform and connect it to the Kubernetes API server that contains the PowerDNS Operator if you don't want to grant direct access to the Kubernetes cluster.</p>

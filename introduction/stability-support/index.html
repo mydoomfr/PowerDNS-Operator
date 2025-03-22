@@ -16,7 +16,7 @@
         <link rel="prev" href="../faq/">
       
       
-        <link rel="next" href="../../guides/zones/">
+        <link rel="next" href="../../guides/clusterzones/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
@@ -256,12 +256,32 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../guides/zones/" class="md-tabs__link">
+        <a href="../../guides/clusterzones/" class="md-tabs__link">
           
   
     
   
   Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../testing_environment/k3d/" class="md-tabs__link">
+          
+  
+    
+  
+  Testing Environment
 
         </a>
       </li>
@@ -465,6 +485,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Stability and Support
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -474,6 +505,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#breaking-changes-introduced-in-v04x-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking changes introduced in v0.4.x versions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -495,6 +554,10 @@
   
     
     
+      
+        
+      
+        
       
         
       
@@ -534,6 +597,27 @@
             Guides
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/clusterzones/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClusterZones
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -584,11 +668,127 @@
   
   
     <li class="md-nav__item">
+      <a href="../../guides/metrics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../guides/warnings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Warnings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Testing Environment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Testing Environment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing_environment/k3d/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    K3D
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing_environment/powerdns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PowerDNS
   </span>
   
 
@@ -625,6 +825,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#breaking-changes-introduced-in-v04x-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breaking changes introduced in v0.4.x versions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -641,8 +858,30 @@
   
 
 
-<h1 id="stability-and-support">Stability and Support</h1>
-<p>TODO</p>
+<h1 id="stability-and-support">Stability and Support<a class="headerlink" href="#stability-and-support" title="Permanent link">⚓</a></h1>
+<h2 id="breaking-changes-introduced-in-v04x-versions">Breaking changes introduced in v0.4.x versions<a class="headerlink" href="#breaking-changes-introduced-in-v04x-versions" title="Permanent link">⚓</a></h2>
+<p>We noticed lacks of security and delegation possibilities with &lt;=v0.3.x versions, so we decided to split previous <code>Zone</code> in 2 differents Custom Resources: </p>
+<ul>
+<li><code>ClusterZone</code> (cluster-wide resource)</li>
+<li><code>Zone</code> (namespaced resource)</li>
+</ul>
+<p>This decision introduces breaking changes</p>
+<ul>
+<li><code>Zone</code> was previously cluster-wide resource become namespace-scoped</li>
+<li><code>rrset.spec.zoneRef.kind</code> is a new mandatory field to indicate whereas the <code>RRset</code> depends on a <code>Zone</code> or a <code>ClusterZone</code></li>
+<li><code>rrset.status.syncErrorDescription</code> is replaced by a <code>Status.Condition</code> field as adviced by the community<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup></li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>https://heidloff.net/article/storing-state-status-kubernetes-resources-conditions-operators-go/&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>https://maelvls.dev/kubernetes-conditions/&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 

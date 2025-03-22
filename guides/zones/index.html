@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://orange-opensource.github.io/powerdns-operator/guides/zones/">
       
       
-        <link rel="prev" href="../../introduction/stability-support/">
+        <link rel="prev" href="../clusterzones/">
       
       
         <link rel="next" href="../rrsets/">
@@ -256,12 +256,32 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../clusterzones/" class="md-tabs__link">
           
   
     
   
   Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../testing_environment/k3d/" class="md-tabs__link">
+          
+  
+    
+  
+  Testing Environment
 
         </a>
       </li>
@@ -491,6 +511,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -524,6 +548,27 @@
             Guides
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clusterzones/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClusterZones
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -632,11 +677,127 @@
   
   
     <li class="md-nav__item">
+      <a href="../metrics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../warnings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Warnings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Testing Environment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Testing Environment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing_environment/k3d/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    K3D
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing_environment/powerdns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PowerDNS
   </span>
   
 
@@ -715,8 +876,8 @@
   
 
 
-<h1 id="zone-deployment">Zone deployment</h1>
-<h2 id="specification">Specification</h2>
+<h1 id="zone-deployment">Zone deployment<a class="headerlink" href="#zone-deployment" title="Permanent link">⚓</a></h1>
+<h2 id="specification">Specification<a class="headerlink" href="#specification" title="Permanent link">⚓</a></h2>
 <p>The specification of the <code>Zone</code> contains the following fields:</p>
 <table>
 <thead>
@@ -754,11 +915,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="example">Example</h2>
-<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dns.cav.enablers.ob/v1alpha1</span>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">⚓</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dns.cav.enablers.ob/v1alpha2</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Zone</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">helloworld.com</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">nameservers</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns1.helloworld.com</span>
