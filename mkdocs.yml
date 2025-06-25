@@ -44,7 +44,11 @@ theme:
 markdown_extensions:
   - attr_list
   - pymdownx.highlight
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - admonition
   - footnotes
   - toc:
@@ -56,6 +60,7 @@ nav:
       - Introduction: index.md
       - Overview: introduction/overview.md
       - Getting started: introduction/getting-started.md
+      - Advanced Getting Started: guides/getting-started-advanced.md
       - FAQ: introduction/faq.md
       - Stability and Support: introduction/stability-support.md
   - Guides:
@@ -65,6 +70,13 @@ nav:
       - RRsets: guides/rrsets.md
       - Metrics: guides/metrics.md
       - Warnings: guides/warnings.md
+      - Security: guides/security.md
+      - Troubleshooting: guides/troubleshooting.md
+  - Examples:
+      - Basic Examples: examples/basic-zone.yaml
+      - RRset Examples: examples/rrset-examples.yaml
+      - Cluster Resources: examples/cluster-resources.yaml
+      - Deployment Patterns: examples/deployment-patterns.yaml
   - Testing Environment:
       - K3D: testing_environment/k3d.md
       - PowerDNS: testing_environment/powerdns.md
