@@ -1,0 +1,183 @@
+# Basic Zone Examples for PowerDNS Operator
+# This file demonstrates various zone configurations
+
+---
+# Example 1: Simple Zone
+# A basic zone configuration for a domain
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: example.com
+  namespace: default
+  labels:
+    environment: production
+    team: platform
+  annotations:
+    description: "Main corporate domain"
+    owner: "platform-team@company.com"
+spec:
+  # Zone type - Native for standalone zones
+  kind: Native
+  # Nameservers for this zone
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # Optional: SOA record customization
+  # soa_edit_api: EPOCH  # Uncomment to use EPOCH timestamps
+
+---
+# Example 2: Zone with Custom SOA Settings
+# Demonstrates advanced SOA record configuration
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: advanced.example.com
+  namespace: production
+  labels:
+    environment: production
+    criticality: high
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # SOA record will be auto-generated with EPOCH timestamps
+  soa_edit_api: EPOCH
+  # Optional: Specify account for multi-tenant setups
+  account: "production-team"
+
+---
+# Example 3: Development Zone
+# Zone configuration for development environment
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: dev.example.com
+  namespace: development
+  labels:
+    environment: development
+    team: dev-team
+  annotations:
+    description: "Development environment zone"
+    ttl-default: "300"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # Development zones often use shorter TTLs
+  # This will be applied to records without explicit TTL
+
+---
+# Example 4: Staging Zone
+# Zone for staging environment with specific configuration
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: staging.example.com
+  namespace: staging
+  labels:
+    environment: staging
+    team: qa-team
+  annotations:
+    description: "Staging environment zone"
+    backup-policy: "daily"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # Staging might use different SOA settings
+  soa_edit_api: EPOCH
+
+---
+# Example 5: Service-Specific Zone
+# Zone dedicated to microservices
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: services.example.com
+  namespace: microservices
+  labels:
+    environment: production
+    team: platform
+    zone-type: services
+  annotations:
+    description: "Zone for microservices discovery"
+    auto-registration: "enabled"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # Services often need shorter TTLs for faster updates
+  account: "services-team"
+
+---
+# Example 6: Regional Zone
+# Zone for specific geographical region
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: us-east.example.com
+  namespace: us-east-region
+  labels:
+    environment: production
+    region: us-east
+    team: platform
+  annotations:
+    description: "US East region zone"
+    region: "us-east-1"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.us-east.example.com
+    - ns2.us-east.example.com
+  # Regional zones might have region-specific settings
+  account: "us-east-team"
+
+---
+# Example 7: Zone with Catalog Integration
+# Zone that participates in PowerDNS catalog zones
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: catalog-member.example.com
+  namespace: catalog-zones
+  labels:
+    environment: production
+    catalog-enabled: "true"
+  annotations:
+    description: "Zone participating in catalog"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # Catalog zones help with zone management
+  catalog: "zones.catalog.example.com"
+
+---
+# Example 8: Multi-Environment Zone Pattern
+# Template for creating zones across environments
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: Zone
+metadata:
+  name: api.example.com
+  namespace: api-services
+  labels:
+    environment: production
+    service: api
+    team: backend
+  annotations:
+    description: "API services zone"
+    load-balancer: "enabled"
+    monitoring: "enabled"
+spec:
+  kind: Native
+  nameservers:
+    - ns1.example.com
+    - ns2.example.com
+  # API zones often need fast propagation
+  soa_edit_api: EPOCH
+  account: "api-team"

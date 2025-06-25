@@ -1,0 +1,777 @@
+# Deployment Patterns and GitOps Examples for PowerDNS Operator
+# This file demonstrates various deployment strategies and GitOps workflows
+
+---
+# Example 1: Basic Kustomization for Multi-Environment
+# Base configuration that can be customized per environment
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: powerdns-base
+  annotations:
+    description: "Base PowerDNS configuration for multi-environment deployment"
+
+resources:
+  - zone-base.yaml
+  - rrset-base.yaml
+
+commonLabels:
+  app: powerdns-operator
+  managed-by: kustomize
+
+---
+# Example 2: Production Environment Overlay
+# Production-specific configuration
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: powerdns-production
+  annotations:
+    description: "Production environment configuration"
+
+resources:
+  - ../../base/powerdns/
+
+namespace: production
+
+patchesStrategicMerge:
+  - zone-production-patch.yaml
+  - rrset-production-patch.yaml
+
+commonLabels:
+  environment: production
+  criticality: high
+
+replicas:
+  - name: powerdns-operator-controller-manager
+    count: 3
+
+---
+# Example 3: ArgoCD Application
+# GitOps deployment with ArgoCD
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: powerdns-operator
+  namespace: argocd
+  labels:
+    app: powerdns-operator
+  annotations:
+    description: "PowerDNS Operator managed by ArgoCD"
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/company/infrastructure-config
+    path: powerdns-operator/overlays/production
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: powerdns-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+---
+# Example 4: Flux HelmRelease
+# GitOps deployment with Flux
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: powerdns-operator
+  namespace: powerdns-operator-system
+  labels:
+    app: powerdns-operator
+  annotations:
+    description: "PowerDNS Operator deployed via Flux"
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: powerdns-operator
+      version: ">=1.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: powerdns-operator
+        namespace: flux-system
+      interval: 5m
+  values:
+    replicaCount: 2
+    image:
+      repository: ghcr.io/powerdns-operator/powerdns-operator
+      tag: "v1.0.0"
+    config:
+      pdnsApiUrl: "https://powerdns.company.com:8081"
+      pdnsApiVhost: "localhost"
+    monitoring:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+---
+# Example 5: Blue-Green Deployment Strategy
+# DNS configuration for blue-green deployments
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-blue
+  namespace: production
+  labels:
+    deployment-strategy: blue-green
+    active-deployment: "blue"
+    service: web-app
+  annotations:
+    description: "Blue deployment DNS record"
+    deployment-id: "blue-v1.2.3"
+    last-updated: "2025-01-20T10:00:00Z"
+spec:
+  type: A
+  ttl: 60  # Short TTL for quick switching
+  records:
+    - 10.0.1.10
+    - 10.0.1.11
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Blue deployment servers"
+
+---
+# Blue-Green: Green deployment (standby)
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-green
+  namespace: production
+  labels:
+    deployment-strategy: blue-green
+    active-deployment: "standby"
+    service: web-app
+  annotations:
+    description: "Green deployment DNS record (standby)"
+    deployment-id: "green-v1.2.4"
+    ready-for-switch: "true"
+spec:
+  type: A
+  ttl: 60
+  records:
+    - 10.0.2.10
+    - 10.0.2.11
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Green deployment servers (standby)"
+
+---
+# Blue-Green: Active traffic record
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-production
+  namespace: production
+  labels:
+    deployment-strategy: blue-green
+    traffic-type: active
+    service: web-app
+  annotations:
+    description: "Active traffic endpoint"
+    points-to: "blue"
+    switch-ready: "true"
+spec:
+  type: CNAME
+  ttl: 30  # Very short TTL for instant switching
+  records:
+    - app-blue.production.company.com
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Active traffic pointing to blue deployment"
+
+---
+# Example 6: Canary Deployment Strategy
+# DNS configuration for canary deployments
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-stable
+  namespace: production
+  labels:
+    deployment-strategy: canary
+    deployment-type: stable
+    service: web-app
+  annotations:
+    description: "Stable deployment endpoint"
+    version: "v1.2.3"
+    traffic-percentage: "90"
+spec:
+  type: A
+  ttl: 120
+  records:
+    - 10.0.10.10
+    - 10.0.10.11
+    - 10.0.10.12
+    - 10.0.10.13
+    - 10.0.10.14
+    - 10.0.10.15
+    - 10.0.10.16
+    - 10.0.10.17
+    - 10.0.10.18  # 9 IPs for 90% traffic
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Stable deployment (90% traffic)"
+
+---
+# Canary: New version deployment
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-canary
+  namespace: production
+  labels:
+    deployment-strategy: canary
+    deployment-type: canary
+    service: web-app
+  annotations:
+    description: "Canary deployment endpoint"
+    version: "v1.2.4"
+    traffic-percentage: "10"
+    monitoring: "enhanced"
+spec:
+  type: A
+  ttl: 30  # Short TTL for quick rollback
+  records:
+    - 10.0.11.10  # 1 IP for 10% traffic
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Canary deployment (10% traffic)"
+
+---
+# Canary: Combined traffic distribution
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-canary-combined
+  namespace: production
+  labels:
+    deployment-strategy: canary
+    deployment-type: combined
+    service: web-app
+  annotations:
+    description: "Combined canary traffic distribution"
+    stable-percentage: "90"
+    canary-percentage: "10"
+spec:
+  type: A
+  ttl: 60
+  records:
+    # 90% traffic to stable (9 IPs)
+    - 10.0.10.10
+    - 10.0.10.11
+    - 10.0.10.12
+    - 10.0.10.13
+    - 10.0.10.14
+    - 10.0.10.15
+    - 10.0.10.16
+    - 10.0.10.17
+    - 10.0.10.18
+    # 10% traffic to canary (1 IP)
+    - 10.0.11.10
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "90/10 canary traffic split"
+
+---
+# Example 7: Multi-Region Deployment
+# DNS configuration for multi-region deployments
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: ClusterRRset
+metadata:
+  name: app-global
+  labels:
+    deployment-strategy: multi-region
+    scope: global
+    service: web-app
+  annotations:
+    description: "Global load balancer endpoint"
+    regions: "us-east,us-west,eu-central"
+    failover: "automatic"
+spec:
+  type: A
+  ttl: 60
+  records:
+    # US East region
+    - 10.1.1.10
+    - 10.1.1.11
+    # US West region
+    - 10.2.1.10
+    - 10.2.1.11
+    # EU Central region
+    - 10.3.1.10
+    - 10.3.1.11
+  zoneRef:
+    name: company.com
+    kind: ClusterZone
+  comment: "Global multi-region deployment"
+
+---
+# Multi-Region: US East specific
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: ClusterRRset
+metadata:
+  name: app-us-east
+  labels:
+    deployment-strategy: multi-region
+    region: us-east
+    service: web-app
+  annotations:
+    description: "US East region endpoint"
+    latency-based: "true"
+    health-check: "enabled"
+spec:
+  type: A
+  ttl: 60
+  records:
+    - 10.1.1.10
+    - 10.1.1.11
+  zoneRef:
+    name: us-east.company.com
+    kind: ClusterZone
+  comment: "US East region deployment"
+
+---
+# Example 8: Feature Flag Deployment
+# DNS configuration for feature flag-based deployments
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-feature-alpha
+  namespace: production
+  labels:
+    deployment-strategy: feature-flag
+    feature: alpha-feature
+    service: web-app
+  annotations:
+    description: "Feature flag deployment for alpha users"
+    feature-flag: "alpha-feature"
+    user-percentage: "5"
+spec:
+  type: A
+  ttl: 30
+  records:
+    - 10.0.20.10
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Alpha feature deployment"
+
+---
+# Example 9: Rolling Update Strategy
+# DNS configuration for rolling updates
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-rolling-v1
+  namespace: production
+  labels:
+    deployment-strategy: rolling-update
+    version: v1
+    phase: active
+  annotations:
+    description: "Rolling update - version 1 (active)"
+    instances: "6"
+    max-unavailable: "25%"
+spec:
+  type: A
+  ttl: 30
+  records:
+    - 10.0.30.10
+    - 10.0.30.11
+    - 10.0.30.12
+    - 10.0.30.13
+    - 10.0.30.14
+    - 10.0.30.15
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Rolling update v1 instances"
+
+---
+# Rolling Update: Version 2 (being deployed)
+apiVersion: dns.cav.enableers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-rolling-v2
+  namespace: production
+  labels:
+    deployment-strategy: rolling-update
+    version: v2
+    phase: deploying
+  annotations:
+    description: "Rolling update - version 2 (deploying)"
+    instances: "2"
+    rollout-status: "in-progress"
+spec:
+  type: A
+  ttl: 30
+  records:
+    - 10.0.31.10
+    - 10.0.31.11
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "Rolling update v2 instances (deploying)"
+
+---
+# Example 10: A/B Testing Deployment
+# DNS configuration for A/B testing
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-variant-a
+  namespace: production
+  labels:
+    deployment-strategy: ab-testing
+    variant: a
+    service: web-app
+  annotations:
+    description: "A/B test variant A"
+    test-id: "checkout-flow-v1"
+    traffic-allocation: "50"
+spec:
+  type: A
+  ttl: 60
+  records:
+    - 10.0.40.10
+    - 10.0.40.11
+    - 10.0.40.12
+    - 10.0.40.13
+    - 10.0.40.14  # 5 IPs for 50% traffic
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "A/B test variant A (50%)"
+
+---
+# A/B Testing: Variant B
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: RRset
+metadata:
+  name: app-variant-b
+  namespace: production
+  labels:
+    deployment-strategy: ab-testing
+    variant: b
+    service: web-app
+  annotations:
+    description: "A/B test variant B"
+    test-id: "checkout-flow-v2"
+    traffic-allocation: "50"
+spec:
+  type: A
+  ttl: 60
+  records:
+    - 10.0.41.10
+    - 10.0.41.11
+    - 10.0.41.12
+    - 10.0.41.13
+    - 10.0.41.14  # 5 IPs for 50% traffic
+  zoneRef:
+    name: production.company.com
+    kind: Zone
+  comment: "A/B test variant B (50%)"
+
+---
+# Example 11: Disaster Recovery Setup
+# DNS configuration for disaster recovery
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: ClusterRRset
+metadata:
+  name: app-primary-site
+  labels:
+    deployment-strategy: disaster-recovery
+    site: primary
+    service: web-app
+  annotations:
+    description: "Primary site deployment"
+    rpo: "15min"
+    rto: "1hour"
+    failover-type: "manual"
+spec:
+  type: A
+  ttl: 300  # Normal TTL for primary site
+  records:
+    - 10.0.50.10
+    - 10.0.50.11
+    - 10.0.50.12
+  zoneRef:
+    name: company.com
+    kind: ClusterZone
+  comment: "Primary data center"
+
+---
+# Disaster Recovery: Secondary site (standby)
+apiVersion: dns.cav.enablers.ob/v1alpha2
+kind: ClusterRRset
+metadata:
+  name: app-dr-site
+  labels:
+    deployment-strategy: disaster-recovery
+    site: secondary
+    service: web-app
+  annotations:
+    description: "Disaster recovery site (standby)"
+    rpo: "15min"
+    rto: "1hour"
+    status: "standby"
+spec:
+  type: A
+  ttl: 60  # Short TTL for quick failover
+  records:
+    - 10.0.60.10
+    - 10.0.60.11
+  zoneRef:
+    name: dr.company.com
+    kind: ClusterZone
+  comment: "Disaster recovery data center"
+
+---
+# Example 12: Kubernetes Job for DNS Management
+# Automated DNS management using Kubernetes Jobs
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dns-deployment-job
+  namespace: production
+  labels:
+    app: dns-deployment
+    component: automation
+  annotations:
+    description: "Automated DNS deployment job"
+spec:
+  template:
+    metadata:
+      labels:
+        app: dns-deployment
+        component: automation
+    spec:
+      restartPolicy: Never
+      serviceAccountName: dns-deployment-sa
+      containers:
+      - name: dns-deploy
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting DNS deployment..."
+
+          # Apply DNS configurations
+          kubectl apply -f /configs/zones.yaml
+          kubectl apply -f /configs/records.yaml
+
+          # Wait for DNS propagation
+          sleep 30
+
+          # Verify DNS records
+          kubectl get zones,rrsets -o wide
+
+          echo "DNS deployment completed"
+        volumeMounts:
+        - name: dns-configs
+          mountPath: /configs
+      volumes:
+      - name: dns-configs
+        configMap:
+          name: dns-deployment-configs
+
+---
+# Example 13: CronJob for DNS Cleanup
+# Automated cleanup of temporary DNS records
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dns-cleanup-job
+  namespace: production
+  labels:
+    app: dns-cleanup
+    component: maintenance
+  annotations:
+    description: "Automated DNS cleanup job"
+spec:
+  schedule: "0 2 * * *"  # Run daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: dns-cleanup
+            component: maintenance
+        spec:
+          restartPolicy: Never
+          serviceAccountName: dns-cleanup-sa
+          containers:
+          - name: dns-cleanup
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting DNS cleanup..."
+
+              # Find and delete expired records
+              kubectl get rrsets --all-namespaces -o json | \
+                jq -r '.items[] | select(.metadata.annotations."expire-after" != null) |
+                       select((now - (.metadata.creationTimestamp | fromdateiso8601)) >
+                             (.metadata.annotations."expire-after" | tonumber)) |
+                       "\(.metadata.namespace)/\(.metadata.name)"' | \
+                while read record; do
+                  echo "Deleting expired record: $record"
+                  kubectl delete rrset "$record"
+                done
+
+              echo "DNS cleanup completed"
+
+---
+# Example 14: GitOps Workflow with ArgoCD
+# Complete GitOps workflow configuration
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: powerdns-environments
+  namespace: argocd
+  labels:
+    app: powerdns-operator
+  annotations:
+    description: "PowerDNS configurations for all environments"
+spec:
+  generators:
+  - list:
+      elements:
+      - environment: development
+        namespace: dev
+        replicaCount: 1
+      - environment: staging
+        namespace: staging
+        replicaCount: 2
+      - environment: production
+        namespace: production
+        replicaCount: 3
+  template:
+    metadata:
+      name: 'powerdns-{{environment}}'
+      labels:
+        environment: '{{environment}}'
+    spec:
+      project: infrastructure
+      source:
+        repoURL: https://github.com/company/dns-config
+        path: 'environments/{{environment}}'
+        targetRevision: main
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
+---
+# Example 15: Monitoring and Alerting Setup
+# ServiceMonitor for Prometheus monitoring
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: powerdns-operator-metrics
+  namespace: powerdns-operator-system
+  labels:
+    app: powerdns-operator
+    component: monitoring
+  annotations:
+    description: "Prometheus monitoring for PowerDNS Operator"
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  endpoints:
+  - port: https
+    path: /metrics
+    scheme: https
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    tlsConfig:
+      insecureSkipVerify: true
+  namespaceSelector:
+    matchNames:
+    - powerdns-operator-system
+
+---
+# PrometheusRule for DNS-specific alerts
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: powerdns-operator-alerts
+  namespace: powerdns-operator-system
+  labels:
+    app: powerdns-operator
+    component: alerting
+spec:
+  groups:
+  - name: powerdns-operator.rules
+    rules:
+    - alert: PowerDNSOperatorDown
+      expr: up{job="powerdns-operator-controller-manager"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        service: powerdns-operator
+      annotations:
+        summary: "PowerDNS Operator is down"
+        description: "PowerDNS Operator has been down for more than 5 minutes"
+
+    - alert: DNSReconciliationFailed
+      expr: increase(controller_runtime_reconcile_errors_total{controller="zone"}[5m]) > 0
+      for: 2m
+      labels:
+        severity: warning
+        service: powerdns-operator
+      annotations:
+        summary: "DNS reconciliation failures detected"
+        description: "DNS zone reconciliation has failed {{ $value }} times in the last 5 minutes"
+
+    - alert: PowerDNSAPIError
+      expr: increase(powerdns_api_requests_failed_total[5m]) > 10
+      for: 1m
+      labels:
+        severity: critical
+        service: powerdns-operator
+      annotations:
+        summary: "High PowerDNS API error rate"
+        description: "PowerDNS API requests are failing at a high rate: {{ $value }} failures in 5 minutes"
