@@ -121,6 +121,7 @@ jobs:
 
   repo-slug:
     runs-on: ubuntu-latest
+    needs: detect-noop
     outputs:
       repo_slug: ${{ steps.repo_slug.outputs.result }}
     if: needs.detect-noop.outputs.noop != 'true'
