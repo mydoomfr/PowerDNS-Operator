@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction" class="md-skip">
+        <a href="#powerdns-operator" class="md-skip">
           Skip to content
         </a>
       
@@ -808,9 +808,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-use-powerdns-operator" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Why use PowerDNS Operator?
+      Key Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Resources
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
     </span>
   </a>
   
@@ -834,18 +861,77 @@
   
 
 
-<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓</a></h1>
+<h1 id="powerdns-operator">PowerDNS Operator<a class="headerlink" href="#powerdns-operator" title="Permanent link">⚓</a></h1>
 <p><img alt="high-level" src="assets/diagrams-high-level-simple.png" /></p>
-<p><strong>PowerDNS Operator</strong> is a Kubernetes operator that manages PowerDNS service.</p>
-<p>With PowerDNS Operator you can manage zones, records and other PowerDNS resources directly from Kubernetes. It is designed to be a simple and easy-to-use solution to manage PowerDNS directly from Kubernetes through Custom Resources. The PowerDNS service can be located inside or outside of Kubernetes, it does not matter since the Operator relies on the PowerDNS API.</p>
+<p><strong>PowerDNS Operator</strong> is a Kubernetes operator that provides declarative DNS management using Custom Resource Definitions (CRDs). It enables you to manage PowerDNS zones and records directly from Kubernetes manifests.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓</a></h2>
+<ul>
+<li><strong>Declarative DNS Management</strong>: Manage zones and records through Kubernetes CRDs</li>
+<li><strong>Flexible Deployment</strong>: PowerDNS can be deployed inside or outside the Kubernetes cluster</li>
+<li><strong>Namespace Isolation</strong>: Support for both cluster-wide and namespace-scoped resources</li>
+<li><strong>RBAC Integration</strong>: Fine-grained access control with Kubernetes RBAC</li>
+<li><strong>GitOps Ready</strong>: Perfect for GitOps workflows with ArgoCD, Flux, or similar tools</li>
+<li><strong>Metrics &amp; Monitoring</strong>: Built-in Prometheus metrics and observability</li>
+</ul>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">⚓</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install the operator</span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://github.com/powerdns-operator/PowerDNS-Operator/releases/latest/download/bundle.yaml
+
+<span class="c1"># Create a zone</span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">apiVersion: dns.cav.enablers.ob/v1alpha2</span>
+<span class="s">kind: ClusterZone</span>
+<span class="s">metadata:</span>
+<span class="s">  name: example.com</span>
+<span class="s">spec:</span>
+<span class="s">  kind: Native</span>
+<span class="s">  nameservers:</span>
+<span class="s">    - ns1.example.com</span>
+<span class="s">    - ns2.example.com</span>
+<span class="s">EOF</span>
+</code></pre></div>
+<h2 id="supported-resources">Supported Resources<a class="headerlink" href="#supported-resources" title="Permanent link">⚓</a></h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Scope</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ClusterZone</code></td>
+<td>Cluster-wide</td>
+<td>DNS zones available across all namespaces</td>
+</tr>
+<tr>
+<td><code>Zone</code></td>
+<td>Namespace-scoped</td>
+<td>DNS zones isolated within a namespace</td>
+</tr>
+<tr>
+<td><code>ClusterRRset</code></td>
+<td>Cluster-wide</td>
+<td>DNS records in cluster zones</td>
+</tr>
+<tr>
+<td><code>RRset</code></td>
+<td>Namespace-scoped</td>
+<td>DNS records in namespace zones</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓</a></h2>
+<ul>
+<li><strong>Kubernetes</strong>: 1.29+</li>
+<li><strong>PowerDNS</strong>: 4.7+ with API enabled</li>
+<li><strong>API Access</strong>: PowerDNS API must be accessible from the Kubernetes cluster</li>
+</ul>
 <div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>This project use the official <a href="https://doc.powerdns.com/authoritative/http-api/">PowerDNS API</a> and cannot be plugged to <a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin">PowerDNS-Admin</a> project which implement its own specific API on top PowerDNS's API. There is no issue if you want to use both projects together, but the operator can only relies on the official API and you may notice issues if you try to use PowerDNS-Admin to manage the same resources as the operator.</p>
+<p class="admonition-title">API Compatibility</p>
+<p>This operator uses the official <a href="https://doc.powerdns.com/authoritative/http-api/">PowerDNS API</a> and cannot be used with PowerDNS-Admin's custom API. Both can coexist but should not manage the same resources.</p>
 </div>
-<h3 id="why-use-powerdns-operator">Why use PowerDNS Operator?<a class="headerlink" href="#why-use-powerdns-operator" title="Permanent link">⚓</a></h3>
-<p>We needed to offer DNS capabilities to users and considered relying on the PowerDNS-Admin project. However, we wanted a more flexible solution that could be natively integrated with our existing Kubernetes infrastructure. We were also looking for a solution that could be easily integrated with our GitOps workflow to automate the creation of DNS records as well as other resources such as Ingress, Services, etc.</p>
-<p>Another reason is that the PowerDNS-Admin project is not in <a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin/discussions/1708">good health</a> and will probably be rewritten in the future. We wanted a solution that is more reliable and easily maintained.</p>
-<p>The PowerDNS Operator is a convenient way to offer self-service DNS capabilities to users, allowing them to create resources directly in the Kubernetes cluster. Additionally, you can use Backstage or any Internal Developer Platform and connect it to the Kubernetes API server that contains the PowerDNS Operator if you don't want to grant direct access to the Kubernetes cluster.</p>
 
 
 

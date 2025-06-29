@@ -688,11 +688,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#available-metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Available Metrics
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Metrics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prometheus Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grafana-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grafana Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -855,11 +915,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#available-metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Available Metrics
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Metrics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prometheus Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grafana-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grafana Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Queries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -882,54 +1002,87 @@
 
 
 <h1 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">⚓</a></h1>
-<p>PowerDNS-Operator exposes metrics in Prometheus format.  </p>
+<p>The PowerDNS Operator exposes Prometheus metrics for monitoring and observability.</p>
+<h2 id="available-metrics">Available Metrics<a class="headerlink" href="#available-metrics" title="Permanent link">⚓</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
+<th>Metric</th>
 <th>Type</th>
 <th>Description</th>
-<th>Available labels</th>
+<th>Labels</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>clusterzones_status</td>
+<td><code>clusterzones_status</code></td>
 <td>gauge</td>
-<td>Statuses of ClusterZones processed</td>
-<td>name, status</td>
+<td>ClusterZone status</td>
+<td><code>name</code>, <code>status</code></td>
 </tr>
 <tr>
-<td>zones_status</td>
+<td><code>zones_status</code></td>
 <td>gauge</td>
-<td>Statuses of Zones processed</td>
-<td>name, namespace ,status</td>
+<td>Zone status</td>
+<td><code>name</code>, <code>namespace</code>, <code>status</code></td>
 </tr>
 <tr>
-<td>clusterrrsets_status</td>
+<td><code>clusterrrsets_status</code></td>
 <td>gauge</td>
-<td>Statuses of ClusterRRsets processed</td>
-<td>fqdn, name, status, type</td>
+<td>ClusterRRset status</td>
+<td><code>fqdn</code>, <code>name</code>, <code>status</code>, <code>type</code></td>
 </tr>
 <tr>
-<td>rrsets_status</td>
+<td><code>rrsets_status</code></td>
 <td>gauge</td>
-<td>Statuses of RRsets processed</td>
-<td>fqdn, name, namespace, status, type</td>
+<td>RRset status</td>
+<td><code>fqdn</code>, <code>name</code>, <code>namespace</code>, <code>status</code>, <code>type</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">⚓</a></h2>
-<p>The following metrics are based on the example defined <a href="/introduction/overview/#resource-model">here</a></p>
-<div class="highlight"><pre><span></span><code>clusterzones_status{name=&quot;example.org&quot;,status=&quot;Succeeded&quot;} 1
+<h2 id="status-values">Status Values<a class="headerlink" href="#status-values" title="Permanent link">⚓</a></h2>
+<ul>
+<li><strong><code>Succeeded</code></strong>: Resource successfully reconciled</li>
+<li><strong><code>Failed</code></strong>: Resource reconciliation failed</li>
+<li><strong><code>Pending</code></strong>: Resource waiting for dependencies</li>
+</ul>
+<h2 id="example-metrics">Example Metrics<a class="headerlink" href="#example-metrics" title="Permanent link">⚓</a></h2>
+<p>Based on the <a href="../introduction/overview/#resource-model">example configuration</a>:</p>
+<div class="highlight"><pre><span></span><code># Cluster zones
+clusterzones_status{name=&quot;example.org&quot;,status=&quot;Succeeded&quot;} 1
+
+# Cluster records
 clusterrrsets_status{fqdn=&quot;example.org.&quot;,name=&quot;mx.example.org&quot;,status=&quot;Succeeded&quot;,type=&quot;MX&quot;} 1
 clusterrrsets_status{fqdn=&quot;example.org.&quot;,name=&quot;soa.example.org&quot;,status=&quot;Succeeded&quot;,type=&quot;SOA&quot;} 1
 clusterrrsets_status{fqdn=&quot;ns1.example.org.&quot;,name=&quot;ns1.example.org&quot;,status=&quot;Succeeded&quot;,type=&quot;A&quot;} 1
 clusterrrsets_status{fqdn=&quot;ns2.example.org.&quot;,name=&quot;ns2.example.org&quot;,status=&quot;Succeeded&quot;,type=&quot;A&quot;} 1
 
+# Namespace zones
 zones_status{name=&quot;myapp1.example.org&quot;,namespace=&quot;myapp1&quot;,status=&quot;Succeeded&quot;} 1
+
+# Namespace records
 rrsets_status{fqdn=&quot;myapp1.example.org.&quot;,name=&quot;soa.myapp1.example.org&quot;,namespace=&quot;myapp1&quot;,status=&quot;Succeeded&quot;,type=&quot;SOA&quot;} 1
 rrsets_status{fqdn=&quot;front.myapp1.example.org.&quot;,name=&quot;front.myapp1.example.org&quot;,namespace=&quot;myapp1&quot;,status=&quot;Succeeded&quot;,type=&quot;A&quot;} 1
+</code></pre></div>
+<h2 id="monitoring-setup">Monitoring Setup<a class="headerlink" href="#monitoring-setup" title="Permanent link">⚓</a></h2>
+<h3 id="prometheus-configuration">Prometheus Configuration<a class="headerlink" href="#prometheus-configuration" title="Permanent link">⚓</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">scrape_configs</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;powerdns-operator&#39;</span>
+<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;powerdns-operator-controller-manager:8080&#39;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/metrics</span>
+</code></pre></div>
+<h3 id="grafana-dashboard">Grafana Dashboard<a class="headerlink" href="#grafana-dashboard" title="Permanent link">⚓</a></h3>
+<p>Create alerts for:
+- Resources in <code>Failed</code> status
+- Resources stuck in <code>Pending</code> status
+- High failure rates</p>
+<h3 id="example-queries">Example Queries<a class="headerlink" href="#example-queries" title="Permanent link">⚓</a></h3>
+<div class="highlight"><pre><span></span><code># Failed resources count
+sum(clusterzones_status{status=&quot;Failed&quot;}) + sum(zones_status{status=&quot;Failed&quot;})
+
+# Success rate
+sum(clusterzones_status{status=&quot;Succeeded&quot;}) / sum(clusterzones_status)
 </code></pre></div>
 
 
