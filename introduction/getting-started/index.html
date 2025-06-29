@@ -1015,11 +1015,7 @@
 
 <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">⚓</a></h1>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓</a></h2>
-<ul>
-<li><strong>Kubernetes</strong>: 1.29+</li>
-<li><strong>PowerDNS</strong>: 4.7+ with API enabled</li>
-<li><strong>API Access</strong>: PowerDNS API must be accessible from the Kubernetes cluster</li>
-</ul>
+<p>For detailed prerequisites and compatibility information, see the <a href="../stability-support/">Stability and Support</a> documentation.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">⚓</a></h2>
 <h3 id="option-1-direct-installation-recommended">Option 1: Direct Installation (Recommended)<a class="headerlink" href="#option-1-direct-installation-recommended" title="Permanent link">⚓</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create namespace</span>
@@ -1067,38 +1063,30 @@ helm<span class="w"> </span>install<span class="w"> </span>powerdns-operator<spa
 <tr>
 <td><code>PDNS_API_URL</code></td>
 <td>PowerDNS API server URL</td>
-<td>✅ Yes</td>
+<td>Yes</td>
 <td>None</td>
 </tr>
 <tr>
 <td><code>PDNS_API_KEY</code></td>
 <td>PowerDNS API authentication key</td>
-<td>✅ Yes</td>
+<td>Yes</td>
 <td>None</td>
 </tr>
 <tr>
 <td><code>PDNS_API_VHOST</code></td>
 <td>PowerDNS virtual host</td>
-<td>❌ No</td>
+<td>No</td>
 <td><code>localhost</code></td>
 </tr>
 <tr>
 <td><code>PDNS_API_TIMEOUT</code></td>
-<td>API request timeout in seconds</td>
-<td>❌ No</td>
+<td>PowerDNS API request timeout in seconds</td>
+<td>No</td>
 <td><code>10</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">⚓</a></h3>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
-| Environment Variable | Description | Default Value | Required |
-|---------------------|-------------|---------------|----------|
-| <code>PDNS_API_URL</code> | The URL of the PowerDNS API server | None | Yes |
-| <code>PDNS_API_KEY</code> | The API key for authenticating with PowerDNS | None | Yes |
-| <code>PDNS_API_VHOST</code> | The virtual host name for the PowerDNS API | <code>localhost</code> | No |
-| <code>PDNS_API_TIMEOUT</code> | Timeout in seconds for PowerDNS API requests | <code>10</code> | No |</p>
-<h1 id="important-the-operator-will-fail-to-start-if-any-of-the-required-environment-variables-is-not-provided">&gt; <strong>Important</strong>: The operator will fail to start if any of the required environment variables is not provided.<a class="headerlink" href="#important-the-operator-will-fail-to-start-if-any-of-the-required-environment-variables-is-not-provided" title="Permanent link">⚓</a></h1>
 <div class="highlight"><pre><span></span><code><span class="c1"># Check operator status</span>
 kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>powerdns-operator-system
 
@@ -1118,27 +1106,6 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">    - ns2.test.example.com</span>
 <span class="s">EOF</span>
 </code></pre></div>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">⚓</a></h2>
-<ul>
-<li><a href="../guides/">Resource Guides</a> - Learn about each resource type</li>
-<li><a href="../snippets/">Examples</a> - See practical examples</li>
-<li><a href="../guides/">RBAC Setup</a> - Configure access control<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Stashed changes</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</li>
-</ul>
 
 
 

@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#powerdns-operator" class="md-skip">
+        <a href="#powerdns-operator-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -808,36 +808,96 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#what-is-powerdns-operator" class="md-nav__link">
     <span class="md-ellipsis">
-      Key Features
+      What is PowerDNS Operator?
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      Quick Start
+      How It Works
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-resources" class="md-nav__link">
+  <a href="#core-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Supported Resources
+      Core Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dns-zones" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS Zones
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-records-rrsets" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS Records (RRSets)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Relationships
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#getting-started" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      Getting Started
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Points
     </span>
   </a>
   
@@ -861,77 +921,71 @@
   
 
 
-<h1 id="powerdns-operator">PowerDNS Operator<a class="headerlink" href="#powerdns-operator" title="Permanent link">⚓</a></h1>
+<h1 id="powerdns-operator-documentation">PowerDNS Operator Documentation<a class="headerlink" href="#powerdns-operator-documentation" title="Permanent link">⚓</a></h1>
 <p><img alt="high-level" src="assets/diagrams-high-level-simple.png" /></p>
-<p><strong>PowerDNS Operator</strong> is a Kubernetes operator that provides declarative DNS management using Custom Resource Definitions (CRDs). It enables you to manage PowerDNS zones and records directly from Kubernetes manifests.</p>
-<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓</a></h2>
+<h2 id="what-is-powerdns-operator">What is PowerDNS Operator?<a class="headerlink" href="#what-is-powerdns-operator" title="Permanent link">⚓</a></h2>
+<p>PowerDNS Operator is a Kubernetes operator that bridges the gap between Kubernetes and PowerDNS, enabling you to manage DNS infrastructure using familiar Kubernetes patterns and tools. Instead of manually configuring PowerDNS zones and records, you can now use declarative Kubernetes resources that automatically sync with your PowerDNS server.</p>
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">⚓</a></h2>
+<p>The operator follows the standard Kubernetes operator pattern:</p>
+<ol>
+<li><strong>Custom Resources</strong>: You define DNS zones and records using Kubernetes Custom Resource Definitions (CRDs)</li>
+<li><strong>Reconciliation Loop</strong>: The operator continuously watches for changes to these resources</li>
+<li><strong>PowerDNS API</strong>: When changes are detected, the operator translates them into PowerDNS API calls</li>
+<li><strong>State Synchronization</strong>: The operator ensures your PowerDNS server matches your Kubernetes declarations</li>
+</ol>
+<p>This creates a seamless integration where your DNS infrastructure becomes part of your Kubernetes GitOps workflow.</p>
+<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">⚓</a></h2>
+<h3 id="dns-zones">DNS Zones<a class="headerlink" href="#dns-zones" title="Permanent link">⚓</a></h3>
+<p>Zones represent the top-level domains you want to manage. The operator supports two types:</p>
 <ul>
-<li><strong>Declarative DNS Management</strong>: Manage zones and records through Kubernetes CRDs</li>
-<li><strong>Flexible Deployment</strong>: PowerDNS can be deployed inside or outside the Kubernetes cluster</li>
-<li><strong>Namespace Isolation</strong>: Support for both cluster-wide and namespace-scoped resources</li>
-<li><strong>RBAC Integration</strong>: Fine-grained access control with Kubernetes RBAC</li>
-<li><strong>GitOps Ready</strong>: Perfect for GitOps workflows with ArgoCD, Flux, or similar tools</li>
-<li><strong>Metrics &amp; Monitoring</strong>: Built-in Prometheus metrics and observability</li>
+<li><strong>ClusterZones</strong>: Available across all namespaces in your cluster</li>
+<li><strong>Zones</strong>: Scoped to specific namespaces for better isolation</li>
 </ul>
-<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">⚓</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># Install the operator</span>
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://github.com/powerdns-operator/PowerDNS-Operator/releases/latest/download/bundle.yaml
-
-<span class="c1"># Create a zone</span>
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
-<span class="s">apiVersion: dns.cav.enablers.ob/v1alpha2</span>
-<span class="s">kind: ClusterZone</span>
-<span class="s">metadata:</span>
-<span class="s">  name: example.com</span>
-<span class="s">spec:</span>
-<span class="s">  kind: Native</span>
-<span class="s">  nameservers:</span>
-<span class="s">    - ns1.example.com</span>
-<span class="s">    - ns2.example.com</span>
-<span class="s">EOF</span>
+<h3 id="dns-records-rrsets">DNS Records (RRSets)<a class="headerlink" href="#dns-records-rrsets" title="Permanent link">⚓</a></h3>
+<p>Records define the actual DNS entries within zones. Like zones, records can be:</p>
+<ul>
+<li><strong>ClusterRRSets</strong>: Global records accessible from any namespace</li>
+<li><strong>RRSets</strong>: Namespace-scoped records for better security and organization</li>
+</ul>
+<h3 id="resource-relationships">Resource Relationships<a class="headerlink" href="#resource-relationships" title="Permanent link">⚓</a></h3>
+<p>Understanding how resources relate to each other is crucial:</p>
+<div class="highlight"><pre><span></span><code>ClusterZone (example.com)
+├── ClusterRRset (www.example.com)
+└── Zone (app.example.com)
+    └── RRset (api.app.example.com)
 </code></pre></div>
-<h2 id="supported-resources">Supported Resources<a class="headerlink" href="#supported-resources" title="Permanent link">⚓</a></h2>
-<table>
-<thead>
-<tr>
-<th>Resource</th>
-<th>Scope</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>ClusterZone</code></td>
-<td>Cluster-wide</td>
-<td>DNS zones available across all namespaces</td>
-</tr>
-<tr>
-<td><code>Zone</code></td>
-<td>Namespace-scoped</td>
-<td>DNS zones isolated within a namespace</td>
-</tr>
-<tr>
-<td><code>ClusterRRset</code></td>
-<td>Cluster-wide</td>
-<td>DNS records in cluster zones</td>
-</tr>
-<tr>
-<td><code>RRset</code></td>
-<td>Namespace-scoped</td>
-<td>DNS records in namespace zones</td>
-</tr>
-</tbody>
-</table>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓</a></h2>
+<h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">⚓</a></h2>
+<p>The operator consists of several key components:</p>
 <ul>
-<li><strong>Kubernetes</strong>: 1.29+</li>
-<li><strong>PowerDNS</strong>: 4.7+ with API enabled</li>
-<li><strong>API Access</strong>: PowerDNS API must be accessible from the Kubernetes cluster</li>
+<li><strong>Controllers</strong>: Handle the reconciliation logic for each resource type</li>
+<li><strong>PowerDNS Client</strong>: Manages communication with the PowerDNS API</li>
+<li><strong>RBAC Integration</strong>: Provides fine-grained access control</li>
+<li><strong>Metrics</strong>: Built-in monitoring and observability</li>
 </ul>
-<div class="admonition info">
-<p class="admonition-title">API Compatibility</p>
-<p>This operator uses the official <a href="https://doc.powerdns.com/authoritative/http-api/">PowerDNS API</a> and cannot be used with PowerDNS-Admin's custom API. Both can coexist but should not manage the same resources.</p>
-</div>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">⚓</a></h2>
+<p>If you're new to PowerDNS Operator, we recommend following this path:</p>
+<ol>
+<li><strong><a href="introduction/overview/">Overview</a></strong> - Understand the architecture and design principles</li>
+<li><strong><a href="introduction/getting-started/">Getting Started</a></strong> - Installation and basic configuration</li>
+<li><strong><a href="guides/">Resource Guides</a></strong> - Learn about each resource type in detail</li>
+<li><strong><a href="snippets/">Examples</a></strong> - See practical examples and use cases</li>
+</ol>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">⚓</a></h2>
+<p>PowerDNS Operator is particularly valuable for:</p>
+<ul>
+<li><strong>GitOps Workflows</strong>: Manage DNS alongside your application deployments</li>
+<li><strong>Multi-tenant Environments</strong>: Isolate DNS management by namespace</li>
+<li><strong>Automated DNS</strong>: Generate DNS records from Kubernetes services and ingresses</li>
+<li><strong>Infrastructure as Code</strong>: Version control your entire DNS infrastructure</li>
+</ul>
+<h2 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">⚓</a></h2>
+<p>The operator integrates with various Kubernetes and external systems:</p>
+<ul>
+<li><strong>ArgoCD/Flux</strong>: For GitOps-based DNS management</li>
+<li><strong>Prometheus</strong>: Built-in metrics and monitoring</li>
+<li><strong>Kubernetes RBAC</strong>: Fine-grained access control</li>
+<li><strong>PowerDNS API</strong>: Direct integration with PowerDNS Authoritative Server</li>
+</ul>
 
 
 
