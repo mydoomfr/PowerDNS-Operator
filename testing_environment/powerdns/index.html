@@ -821,9 +821,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-2-manual-installation" class="md-nav__link">
+  <a href="#option-2-manual-installation-debianubuntu" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 2: Manual Installation
+      Option 2: Manual Installation (Debian/Ubuntu)
     </span>
   </a>
   
@@ -847,15 +847,6 @@
   <a href="#configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
       Configuration Requirements
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-the-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing the Setup
     </span>
   </a>
   
@@ -923,9 +914,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-2-manual-installation" class="md-nav__link">
+  <a href="#option-2-manual-installation-debianubuntu" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 2: Manual Installation
+      Option 2: Manual Installation (Debian/Ubuntu)
     </span>
   </a>
   
@@ -954,15 +945,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#testing-the-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing the Setup
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -984,14 +966,14 @@
 <h1 id="powerdns-deployment">PowerDNS Deployment<a class="headerlink" href="#powerdns-deployment" title="Permanent link">⚓</a></h1>
 <h2 id="deployment-options">Deployment Options<a class="headerlink" href="#deployment-options" title="Permanent link">⚓</a></h2>
 <h3 id="option-1-using-the-official-deployment">Option 1: Using the Official Deployment<a class="headerlink" href="#option-1-using-the-official-deployment" title="Permanent link">⚓</a></h3>
-<p>For a complete clustered PowerDNS setup, use the official deployment repository:</p>
+<p>For a full clustered PowerDNS setup, check this repository:</p>
 <p><strong><a href="https://github.com/powerdns-operator/powerdns-deployment">PowerDNS Deployment</a></strong></p>
 <p>This repository provides:
 - Complete PowerDNS cluster setup
 - MariaDB backend configuration
 - High availability configuration
 - Monitoring and logging setup</p>
-<h3 id="option-2-manual-installation">Option 2: Manual Installation<a class="headerlink" href="#option-2-manual-installation" title="Permanent link">⚓</a></h3>
+<h3 id="option-2-manual-installation-debianubuntu">Option 2: Manual Installation (Debian/Ubuntu)<a class="headerlink" href="#option-2-manual-installation-debianubuntu" title="Permanent link">⚓</a></h3>
 <p>For testing or simple setups, you can install PowerDNS manually:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Install PowerDNS on Ubuntu/Debian</span>
 apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>pdns-server<span class="w"> </span>pdns-backend-mysql
@@ -1017,14 +999,6 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 - <strong>Web server enabled</strong>: <code>webserver=yes</code> for API access
 - <strong>API key configured</strong>: Secure authentication key
 - <strong>Network access</strong>: Accessible from Kubernetes cluster</p>
-<h2 id="testing-the-setup">Testing the Setup<a class="headerlink" href="#testing-the-setup" title="Permanent link">⚓</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># Test API connectivity</span>
-curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-API-Key: your-secret-key&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>http://powerdns-server:8081/api/v1/servers/localhost/zones
-
-<span class="c1"># Test DNS resolution</span>
-dig<span class="w"> </span>@powerdns-server<span class="w"> </span>example.com
-</code></pre></div>
 
 
 

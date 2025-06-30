@@ -518,48 +518,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#reconciliation-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Reconciliation Process
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Reconciliation Process">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zone-reconciliation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Zone Reconciliation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#record-reconciliation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Record Reconciliation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#roles-and-responsibilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Roles and Responsibilities
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1007,48 +965,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#reconciliation-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Reconciliation Process
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Reconciliation Process">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zone-reconciliation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Zone Reconciliation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#record-reconciliation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Record Reconciliation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#roles-and-responsibilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Roles and Responsibilities
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1194,53 +1110,6 @@
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp1.example.org</span>
 <span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Zone</span>
 </code></pre></div>
-<h2 id="reconciliation-process">Reconciliation Process<a class="headerlink" href="#reconciliation-process" title="Permanent link">⚓</a></h2>
-<h3 id="zone-reconciliation">Zone Reconciliation<a class="headerlink" href="#zone-reconciliation" title="Permanent link">⚓</a></h3>
-<ol>
-<li><strong>Duplicate Check</strong>: Verify no other zone exists with the same FQDN</li>
-<li><strong>API Operation</strong>: Create or modify zone via PowerDNS API</li>
-<li><strong>NS Records</strong>: Create or modify nameserver entries</li>
-<li><strong>Status Update</strong>: Update resource status and metrics</li>
-</ol>
-<h3 id="record-reconciliation">Record Reconciliation<a class="headerlink" href="#record-reconciliation" title="Permanent link">⚓</a></h3>
-<ol>
-<li><strong>Zone Dependency</strong>: Verify the referenced zone exists and is healthy</li>
-<li><strong>Duplicate Check</strong>: Verify no duplicate records exist</li>
-<li><strong>API Operation</strong>: Create or modify record via PowerDNS API</li>
-<li><strong>Owner Reference</strong>: Set ownership relationship</li>
-<li><strong>Status Update</strong>: Update resource status and metrics</li>
-</ol>
-<h2 id="roles-and-responsibilities">Roles and Responsibilities<a class="headerlink" href="#roles-and-responsibilities" title="Permanent link">⚓</a></h2>
-<table>
-<thead>
-<tr>
-<th>Role</th>
-<th>Responsibilities</th>
-<th>Resources</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Cluster Operator</strong></td>
-<td>Configure PowerDNS instance and operator</td>
-<td>Infrastructure setup</td>
-</tr>
-<tr>
-<td><strong>Platform Team</strong></td>
-<td>Define architecture and permissions</td>
-<td>ClusterZone, Zone, ClusterRRset</td>
-</tr>
-<tr>
-<td><strong>Application Team</strong></td>
-<td>Manage application DNS records</td>
-<td>RRset, Zone (namespace-scoped)</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">RBAC Integration</p>
-<p>Each role maps to Kubernetes RBAC roles. The operator provides granular permissions for different use cases.</p>
-</div>
 
 
 

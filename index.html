@@ -810,7 +810,16 @@
         <li class="md-nav__item">
   <a href="#what-is-powerdns-operator" class="md-nav__link">
     <span class="md-ellipsis">
-      What is PowerDNS Operator?
+      What is PowerDNS Operator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-powerdns-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why PowerDNS Operator
     </span>
   </a>
   
@@ -894,15 +903,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#integration-points" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration Points
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -923,17 +923,25 @@
 
 <h1 id="powerdns-operator-documentation">PowerDNS Operator Documentation<a class="headerlink" href="#powerdns-operator-documentation" title="Permanent link">⚓</a></h1>
 <p><img alt="high-level" src="assets/diagrams-high-level-simple.png" /></p>
-<h2 id="what-is-powerdns-operator">What is PowerDNS Operator?<a class="headerlink" href="#what-is-powerdns-operator" title="Permanent link">⚓</a></h2>
+<h2 id="what-is-powerdns-operator">What is PowerDNS Operator<a class="headerlink" href="#what-is-powerdns-operator" title="Permanent link">⚓</a></h2>
 <p>PowerDNS Operator is a Kubernetes operator that bridges the gap between Kubernetes and PowerDNS, enabling you to manage DNS infrastructure using familiar Kubernetes patterns and tools. Instead of manually configuring PowerDNS zones and records, you can now use declarative Kubernetes resources that automatically sync with your PowerDNS server.</p>
+<h2 id="why-powerdns-operator">Why PowerDNS Operator<a class="headerlink" href="#why-powerdns-operator" title="Permanent link">⚓</a></h2>
+<p>We needed to offer DNS capabilities to users and considered relying on the PowerDNS-Admin project. However, we wanted a more flexible solution that could be natively integrated with our existing Kubernetes infrastructure. We were also looking for a solution that could be easily integrated with our GitOps workflow to automate the creation of DNS records as well as other resources such as Ingress, Services, etc.</p>
+<p>Another reason is that the PowerDNS-Admin project is facing maintenance challenges and <a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin/discussions/1708">will be rewritten in the future</a>.</p>
+<p>The PowerDNS Operator provides a declarative approach to DNS management, unlike PowerDNS-Admin's imperative interface. It's a convenient way to offer self-service DNS capabilities to users, allowing them to create resources directly in the Kubernetes cluster. Additionally, you can use GitOps, Backstage or any Internal Developer Platform and connect it to the Kubernetes API server that contains the PowerDNS Operator if you don't want to grant direct access to the Kubernetes cluster.</p>
 <h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">⚓</a></h2>
 <p>The operator follows the standard Kubernetes operator pattern:</p>
 <ol>
 <li><strong>Custom Resources</strong>: You define DNS zones and records using Kubernetes Custom Resource Definitions (CRDs)</li>
-<li><strong>Reconciliation Loop</strong>: The operator continuously watches for changes to these resources</li>
-<li><strong>PowerDNS API</strong>: When changes are detected, the operator translates them into PowerDNS API calls</li>
-<li><strong>State Synchronization</strong>: The operator ensures your PowerDNS server matches your Kubernetes declarations</li>
+<li><strong>Event-Driven Reconciliation</strong>: The operator responds to Kubernetes events (create, update, delete) for these resources</li>
+<li><strong>PowerDNS API</strong>: When events are detected, the operator translates them into PowerDNS API calls</li>
+<li><strong>Declarative Management</strong>: The operator applies your Kubernetes declarations to PowerDNS during reconciliation events</li>
 </ol>
 <p>This creates a seamless integration where your DNS infrastructure becomes part of your Kubernetes GitOps workflow.</p>
+<div class="admonition info">
+<p class="admonition-title">API Compatibility</p>
+<p>This operator uses the official <a href="https://doc.powerdns.com/authoritative/http-api/">PowerDNS API</a> and cannot be used with PowerDNS-Admin's custom API. Both can coexist but should not manage the same resources.</p>
+</div>
 <h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">⚓</a></h2>
 <h3 id="dns-zones">DNS Zones<a class="headerlink" href="#dns-zones" title="Permanent link">⚓</a></h3>
 <p>Zones represent the top-level domains you want to manage. The operator supports two types:</p>
@@ -951,6 +959,7 @@
 <p>Understanding how resources relate to each other is crucial:</p>
 <div class="highlight"><pre><span></span><code>ClusterZone (example.com)
 ├── ClusterRRset (www.example.com)
+└── RRset (blog.example.com)
 └── Zone (app.example.com)
     └── RRset (api.app.example.com)
 </code></pre></div>
@@ -977,14 +986,6 @@
 <li><strong>Multi-tenant Environments</strong>: Isolate DNS management by namespace</li>
 <li><strong>Automated DNS</strong>: Generate DNS records from Kubernetes services and ingresses</li>
 <li><strong>Infrastructure as Code</strong>: Version control your entire DNS infrastructure</li>
-</ul>
-<h2 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">⚓</a></h2>
-<p>The operator integrates with various Kubernetes and external systems:</p>
-<ul>
-<li><strong>ArgoCD/Flux</strong>: For GitOps-based DNS management</li>
-<li><strong>Prometheus</strong>: Built-in metrics and monitoring</li>
-<li><strong>Kubernetes RBAC</strong>: Fine-grained access control</li>
-<li><strong>PowerDNS API</strong>: Direct integration with PowerDNS Authoritative Server</li>
 </ul>
 
 

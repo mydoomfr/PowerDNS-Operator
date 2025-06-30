@@ -1100,14 +1100,14 @@
 <h1 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">⚓</a></h1>
 <h2 id="general-questions">General Questions<a class="headerlink" href="#general-questions" title="Permanent link">⚓</a></h2>
 <h3 id="can-i-use-powerdns-admin-and-powerdns-operator-together">Can I use PowerDNS-Admin and PowerDNS Operator together?<a class="headerlink" href="#can-i-use-powerdns-admin-and-powerdns-operator-together" title="Permanent link">⚓</a></h3>
-<p><strong>Yes, but with limitations.</strong> The operator only supports the official PowerDNS API, while PowerDNS-Admin implements its own custom API. Both can coexist, but avoid managing the same resources with both tools to prevent conflicts.</p>
+<p><strong>Yes, but with caution.</strong> The operator only supports the official PowerDNS API, while PowerDNS-Admin implements its own custom API. Both can coexist, but avoid managing the same resources with both tools to prevent conflicts.</p>
 <h3 id="can-i-manage-multiple-powerdns-servers-with-a-single-operator">Can I manage multiple PowerDNS servers with a single operator?<a class="headerlink" href="#can-i-manage-multiple-powerdns-servers-with-a-single-operator" title="Permanent link">⚓</a></h3>
 <p><strong>No.</strong> The operator is designed to manage a single PowerDNS server. For multiple servers, deploy separate operator instances in different clusters.</p>
 <h3 id="does-the-operator-check-for-configuration-drift">Does the operator check for configuration drift?<a class="headerlink" href="#does-the-operator-check-for-configuration-drift" title="Permanent link">⚓</a></h3>
 <p><strong>No.</strong> The operator only reconciles on Kubernetes events (create, update, delete). It does not periodically check for drift between Kubernetes resources and PowerDNS. This feature may be added in future versions.</p>
 <h2 id="technical-questions">Technical Questions<a class="headerlink" href="#technical-questions" title="Permanent link">⚓</a></h2>
 <h3 id="what-happens-if-i-delete-a-zone-that-has-records">What happens if I delete a zone that has records?<a class="headerlink" href="#what-happens-if-i-delete-a-zone-that-has-records" title="Permanent link">⚓</a></h3>
-<p>The operator will delete the zone and all its records from PowerDNS. Records in Kubernetes will be marked as failed since their referenced zone no longer exists.</p>
+<p>The operator will delete the zone from PowerDNS, which removes all records in that zone. Additionally, due to Kubernetes owner references, all RRSets and ClusterRRSets that reference the deleted zone will be automatically deleted from Kubernetes as well. This cascading deletion ensures that orphaned records don't remain in the cluster.</p>
 <h3 id="can-i-use-the-operator-with-powerdns-recursor">Can I use the operator with PowerDNS Recursor?<a class="headerlink" href="#can-i-use-the-operator-with-powerdns-recursor" title="Permanent link">⚓</a></h3>
 <p><strong>No.</strong> The operator only works with PowerDNS Authoritative Server. The Recursor does not have the same API for zone and record management.</p>
 <h3 id="how-do-i-handle-dns-propagation-delays">How do I handle DNS propagation delays?<a class="headerlink" href="#how-do-i-handle-dns-propagation-delays" title="Permanent link">⚓</a></h3>
@@ -1117,13 +1117,15 @@
 <p>Check for:
 - Duplicate zones with the same FQDN
 - PowerDNS API connectivity issues
-- Invalid zone configuration (nameservers, etc.)</p>
+- Invalid zone configuration (nameservers, etc.)
+- PowerDNS Operator logs</p>
 <h3 id="my-records-are-not-being-created">My records are not being created<a class="headerlink" href="#my-records-are-not-being-created" title="Permanent link">⚓</a></h3>
 <p>Check for:
 - Referenced zone exists and is healthy
 - No duplicate records with the same name and type
 - PowerDNS API permissions
-- Record format (especially for CNAME, MX, SRV records)</p>
+- Record format (especially for CNAME, MX, SRV records)
+- PowerDNS Operator logs</p>
 
 
 

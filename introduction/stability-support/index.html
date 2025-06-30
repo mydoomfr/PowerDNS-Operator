@@ -541,28 +541,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#v04x-breaking-changes" class="md-nav__link">
+  <a href="#breaking-changes-introduced-in-v04x-versions" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.4.x Breaking Changes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="v0.4.x Breaking Changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#changes-made" class="md-nav__link">
-    <span class="md-ellipsis">
-      Changes Made
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#migration-impact" class="md-nav__link">
-    <span class="md-ellipsis">
-      Migration Impact
+      Breaking changes introduced in v0.4.x versions
     </span>
   </a>
   
@@ -570,29 +551,6 @@
         
       </ul>
     </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#support-policy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Support Policy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#community-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      Community Support
-    </span>
-  </a>
   
 </li>
       
@@ -940,28 +898,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#v04x-breaking-changes" class="md-nav__link">
+  <a href="#breaking-changes-introduced-in-v04x-versions" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.4.x Breaking Changes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="v0.4.x Breaking Changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#changes-made" class="md-nav__link">
-    <span class="md-ellipsis">
-      Changes Made
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#migration-impact" class="md-nav__link">
-    <span class="md-ellipsis">
-      Migration Impact
+      Breaking changes introduced in v0.4.x versions
     </span>
   </a>
   
@@ -969,29 +908,6 @@
         
       </ul>
     </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#support-policy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Support Policy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#community-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      Community Support
-    </span>
-  </a>
   
 </li>
       
@@ -1038,38 +954,29 @@
 </tbody>
 </table>
 <h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">⚓</a></h2>
-<h3 id="v04x-breaking-changes">v0.4.x Breaking Changes<a class="headerlink" href="#v04x-breaking-changes" title="Permanent link">⚓</a></h3>
-<p>Version 0.4.x introduced security and delegation improvements by splitting the previous <code>Zone</code> resource into two separate resources:</p>
-<h4 id="changes-made">Changes Made<a class="headerlink" href="#changes-made" title="Permanent link">⚓</a></h4>
+<h3 id="breaking-changes-introduced-in-v04x-versions">Breaking changes introduced in v0.4.x versions<a class="headerlink" href="#breaking-changes-introduced-in-v04x-versions" title="Permanent link">⚓</a></h3>
+<p>We noticed lacks of security and delegation possibilities with &lt;=v0.3.x versions, so we decided to split previous <code>Zone</code> in 2 differents Custom Resources: </p>
 <ul>
-<li><strong><code>Zone</code></strong>: Changed from cluster-wide to namespace-scoped resource</li>
-<li><strong><code>ClusterZone</code></strong>: New cluster-wide resource for platform-level zones</li>
-<li><strong><code>zoneRef.kind</code></strong>: New mandatory field in RRset resources</li>
-<li><strong>Status Conditions</strong>: Replaced <code>syncErrorDescription</code> with standard Kubernetes conditions</li>
+<li><code>ClusterZone</code> (cluster-wide resource)</li>
+<li><code>Zone</code> (namespaced resource)</li>
 </ul>
-<h4 id="migration-impact">Migration Impact<a class="headerlink" href="#migration-impact" title="Permanent link">⚓</a></h4>
+<p>This decision introduces breaking changes</p>
 <ul>
-<li>Existing <code>Zone</code> resources need to be migrated to <code>ClusterZone</code> or updated with namespace</li>
-<li>All <code>RRset</code> resources need the new <code>zoneRef.kind</code> field</li>
-<li>Status field structure changed to use conditions</li>
+<li><code>Zone</code> was previously cluster-wide resource become namespace-scoped</li>
+<li><code>rrset.spec.zoneRef.kind</code> is a new mandatory field to indicate whereas the <code>RRset</code> depends on a <code>Zone</code> or a <code>ClusterZone</code></li>
+<li><code>rrset.status.syncErrorDescription</code> is replaced by a <code>Status.Condition</code> field as adviced by the community<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup></li>
 </ul>
-<div class="admonition warning">
-<p class="admonition-title">Migration Required</p>
-<p>If upgrading from v0.3.x or earlier, review the migration guide and update your resources accordingly.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>https://heidloff.net/article/storing-state-status-kubernetes-resources-conditions-operators-go/&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>https://maelvls.dev/kubernetes-conditions/&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
 </div>
-<h2 id="support-policy">Support Policy<a class="headerlink" href="#support-policy" title="Permanent link">⚓</a></h2>
-<ul>
-<li><strong>Security Updates</strong>: Backported to supported versions</li>
-<li><strong>Bug Fixes</strong>: Applied to current and previous minor versions</li>
-<li><strong>New Features</strong>: Only in current major version</li>
-<li><strong>Deprecation</strong>: Announced 2 versions in advance</li>
-</ul>
-<h2 id="community-support">Community Support<a class="headerlink" href="#community-support" title="Permanent link">⚓</a></h2>
-<ul>
-<li><strong>GitHub Issues</strong>: For bug reports and feature requests</li>
-<li><strong>GitHub Discussions</strong>: For questions and community help</li>
-<li><strong>Documentation</strong>: Comprehensive guides and examples available</li>
-</ul>
 
 
 
