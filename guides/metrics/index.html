@@ -725,27 +725,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prometheus-configuration" class="md-nav__link">
+  <a href="#servicemonitor" class="md-nav__link">
     <span class="md-ellipsis">
-      Prometheus Configuration
+      ServiceMonitor
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#grafana-dashboard" class="md-nav__link">
+  <a href="#grafana-dashboard-wip" class="md-nav__link">
     <span class="md-ellipsis">
-      Grafana Dashboard
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Queries
+      Grafana Dashboard (WIP)
     </span>
   </a>
   
@@ -952,27 +943,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prometheus-configuration" class="md-nav__link">
+  <a href="#servicemonitor" class="md-nav__link">
     <span class="md-ellipsis">
-      Prometheus Configuration
+      ServiceMonitor
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#grafana-dashboard" class="md-nav__link">
+  <a href="#grafana-dashboard-wip" class="md-nav__link">
     <span class="md-ellipsis">
-      Grafana Dashboard
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Queries
+      Grafana Dashboard (WIP)
     </span>
   </a>
   
@@ -1065,25 +1047,39 @@ rrsets_status{fqdn=&quot;myapp1.example.org.&quot;,name=&quot;soa.myapp1.example
 rrsets_status{fqdn=&quot;front.myapp1.example.org.&quot;,name=&quot;front.myapp1.example.org&quot;,namespace=&quot;myapp1&quot;,status=&quot;Succeeded&quot;,type=&quot;A&quot;} 1
 </code></pre></div>
 <h2 id="monitoring-setup">Monitoring Setup<a class="headerlink" href="#monitoring-setup" title="Permanent link">⚓</a></h2>
-<h3 id="prometheus-configuration">Prometheus Configuration<a class="headerlink" href="#prometheus-configuration" title="Permanent link">⚓</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nt">scrape_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;powerdns-operator&#39;</span>
-<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;powerdns-operator-controller-manager:8080&#39;</span><span class="p p-Indicator">]</span>
-<span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/metrics</span>
+<h3 id="servicemonitor">ServiceMonitor<a class="headerlink" href="#servicemonitor" title="Permanent link">⚓</a></h3>
+<p>When using Prometheus Operator, the operator can be monitored using a ServiceMonitor resource. This is the recommended approach in Kubernetes environments:</p>
+<div class="admonition tip">
+<p class="admonition-title">Helm Chart Integration</p>
+<p>If you're using the Helm chart, ServiceMonitor creation can be enabled with:
+<div class="highlight"><pre><span></span><code><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">serviceMonitor</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div></p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">monitoring.coreos.com/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceMonitor</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerdns-operator-metrics</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerdns-operator-system</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">endpoints</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s</span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http-metrics</span>
+<span class="w">    </span><span class="nt">scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span>
+<span class="w">    </span><span class="nt">scrapeTimeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
+<span class="w">  </span><span class="nt">namespaceSelector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matchNames</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">powerdns-operator-system</span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">control-plane</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">controller-manager</span>
 </code></pre></div>
-<h3 id="grafana-dashboard">Grafana Dashboard<a class="headerlink" href="#grafana-dashboard" title="Permanent link">⚓</a></h3>
-<p>Create alerts for:
-- Resources in <code>Failed</code> status
-- Resources stuck in <code>Pending</code> status
-- High failure rates</p>
-<h3 id="example-queries">Example Queries<a class="headerlink" href="#example-queries" title="Permanent link">⚓</a></h3>
-<div class="highlight"><pre><span></span><code># Failed resources count
-sum(clusterzones_status{status=&quot;Failed&quot;}) + sum(zones_status{status=&quot;Failed&quot;})
-
-# Success rate
-sum(clusterzones_status{status=&quot;Succeeded&quot;}) / sum(clusterzones_status)
-</code></pre></div>
+<h3 id="grafana-dashboard-wip">Grafana Dashboard (WIP)<a class="headerlink" href="#grafana-dashboard-wip" title="Permanent link">⚓</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Coming Soon</p>
+<p>Grafana dashboards for PowerDNS Operator metrics will be available in a future release. These dashboards will provide pre-configured visualizations for monitoring DNS zone and record status, reconciliation metrics, and operator performance.</p>
+</div>
 
 
 

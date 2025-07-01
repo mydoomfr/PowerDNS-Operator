@@ -968,11 +968,13 @@
 <h3 id="option-1-using-the-official-deployment">Option 1: Using the Official Deployment<a class="headerlink" href="#option-1-using-the-official-deployment" title="Permanent link">⚓</a></h3>
 <p>For a full clustered PowerDNS setup, check this repository:</p>
 <p><strong><a href="https://github.com/powerdns-operator/powerdns-deployment">PowerDNS Deployment</a></strong></p>
-<p>This repository provides:
-- Complete PowerDNS cluster setup
-- MariaDB backend configuration
-- High availability configuration
-- Monitoring and logging setup</p>
+<p>This repository provides:</p>
+<ul>
+<li>Complete PowerDNS cluster setup</li>
+<li>MariaDB backend configuration</li>
+<li>High availability configuration</li>
+<li>Monitoring and logging setup</li>
+</ul>
 <h3 id="option-2-manual-installation-debianubuntu">Option 2: Manual Installation (Debian/Ubuntu)<a class="headerlink" href="#option-2-manual-installation-debianubuntu" title="Permanent link">⚓</a></h3>
 <p>For testing or simple setups, you can install PowerDNS manually:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Install PowerDNS on Ubuntu/Debian</span>
@@ -994,11 +996,13 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="w">  </span>pschiffe/pdns-mysql
 </code></pre></div>
 <h2 id="configuration-requirements">Configuration Requirements<a class="headerlink" href="#configuration-requirements" title="Permanent link">⚓</a></h2>
-<p>Ensure your PowerDNS instance has:
-- <strong>API enabled</strong>: <code>api=yes</code> in configuration
-- <strong>Web server enabled</strong>: <code>webserver=yes</code> for API access
-- <strong>API key configured</strong>: Secure authentication key
-- <strong>Network access</strong>: Accessible from Kubernetes cluster</p>
+<p>Ensure your PowerDNS instance has:</p>
+<ul>
+<li><strong>API enabled</strong>: <code>api=yes</code> in configuration</li>
+<li><strong>Web server enabled</strong>: <code>webserver=yes</code> for API access</li>
+<li><strong>API key configured</strong>: Secure authentication key</li>
+<li><strong>Network access</strong>: Accessible from Kubernetes cluster</li>
+</ul>
 
 
 
